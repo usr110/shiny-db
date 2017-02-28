@@ -25,7 +25,16 @@ conn <- dbConnect(
 rs <- dbSendQuery(conn, "
                   SELECT `lsoa`.`code`, `lsoa`.`name`, `lsoa`.`geometry`, AsText(`lsoa`.`bbox`) as bbox
                   FROM `lsoa`
-                  WHERE MBRIntersects(`lsoa`.`bbox`, ST_GeomFromText('Polygon((0.0598 52.1113, 0.0598 52.1338, 0.1087 52.1338, 0.1087 52.1113, 0.0598 52.1113))'));
+                  WHERE MBRIntersects(`lsoa`.`bbox`, ST_GeomFromText('Polygon((
+                          -1.57516479492187 53.3677624135012 ,  
+                          -1.57516479492187 53.4087132383714 ,  
+                          -1.36058807373047 53.4087132383714 ,  
+                          -1.36058807373047 53.3677624135012 ,  
+                          -1.57516479492187 53.3677624135012 
+                ))'));
+                                  
 ")
 
 dbdata <- dbFetch(rs)
+
+dbDisconnect(conn)
