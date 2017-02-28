@@ -31,4 +31,27 @@ for (i in 1:nrow(dbdata)){
 
 }
 
-leaflet() %>% addTiles() %>% addPolygons(data = geojson_sp(as.json(test)), popup = dbdata$name)
+
+# test = '{
+#   "type": "FeatureCollection",
+# "features": [
+# {
+#   "type": "Feature",
+#   "id":  " South Cambridgeshire 014B " ,
+#   "geometry": {
+#   "type": "Polygon",
+#   "coordinates": [[
+#   [-2.357941, -53.56315],  
+#   [-0.6413269, 53.56315],  
+#   [-0.6413269, 53.23563], 
+#   [-2.357941, 53.23563],
+#   [-2.357941, 53.23563]]]
+# 
+#   }
+# }
+#   ]
+#   }'
+
+test <- as.json(test)
+ 
+leaflet() %>% addTiles() %>% addPolygons(data = geojson_sp(test), popup = dbdata$name)
