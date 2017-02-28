@@ -1,6 +1,9 @@
 library(leaflet)
 library(DBI)
+
 conn <- NULL
+
+db_cred <- read.csv("db-info.csv", header = T, stringsAsFactors = F)
 
 server <- function(input, output) {
   
