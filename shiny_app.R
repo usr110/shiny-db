@@ -75,12 +75,12 @@ server <- function(input, output) {
     
     qry <- paste0("SELECT `lsoa`.`code`, `lsoa`.`name`, `lsoa`.`geometry`, AsText(`lsoa`.`bbox`) as bbox
                     FROM `lsoa`
-                    WHERE MBRIntersects(`lsoa`.`bbox`, ST_GeomFromText('Polygon(
+                    WHERE MBRIntersects(`lsoa`.`bbox`, ST_GeomFromText('Polygon((
                     ", x0, " ", y0, ", ",
                     x0, " ", y1, ", ",
                     x1, " ", y1, ", ",
                     x1, " ", y0, ", ",
-                    x0, " ", y0, " )'))")
+                    x0, " ", y0, " ))'));")
     
     
     cat(qry, "\n")
@@ -101,19 +101,24 @@ server <- function(input, output) {
     # cat(bbox[1], bbox[2], bbox[3], bbox[4], "\n")
     
     dbdata <- dbFetch(rs)
+    cat("Nrows: ", nrow(dbdata), "\n")
     dbDisconnect(conn)
     
     if (!is.null(dbdata) && nrow(dbdata) > 0){
       
+      cat("Nrows: ", nrow(dbdata), "\n")
+      
       dat <- get_geojson_data(dbdata)
-      isolate({
+      
+      leafletProxy("map")  %>% removeShape(., "highlighted")
+      
+       isolate({
           addPolygons(leafletProxy("map"), 
                       data = dat,
-                      fill = FALSE,
                       color = "black",
                       opacity = 0.7 ,
                       layerId = "highlighted")
-    })
+     })
     
     }
       
