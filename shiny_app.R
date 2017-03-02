@@ -17,10 +17,10 @@ server <- function(input, output) {
       addTiles(., 
                attribution = '<a target="_blank" href="http://shiny.rstudio.com/">Shiny</a> |
                Map &copy <a target="_blank" href ="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-               options = tileOptions(minZoom = 7,
-                                     maxZoom = 18, 
+               options = tileOptions(minZoom = 6,
+                                     maxZoom = 20, 
                                      reuseTiles = T)) %>%
-      setView(lng = -1.5, lat = 53.4, zoom = 8) %>%
+      setView(lng =  -0.118092, lat = 51.509865, zoom = 6) %>%
       mapOptions(zoomToLimits = "first") #%>%
       )
   
@@ -47,10 +47,10 @@ server <- function(input, output) {
     table_name <- "county"
     
     # Set msoa for zoom 10 to 13
-    if(input$map_zoom > 9 && input$map_zoom < 14)
+    if(input$map_zoom > 10 && input$map_zoom < 13)
        table_name <- "msoa"
     # Set lsoa for zoom 14 and above
-    if(input$map_zoom >= 14)
+    if(input$map_zoom >= 13)
       table_name <- "lsoa"
     
     qry <- paste0("SELECT `name`, `geometry`, AsText(`bbox`) as bbox
