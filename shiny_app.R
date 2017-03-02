@@ -20,7 +20,7 @@ server <- function(input, output) {
                options = tileOptions(minZoom = 7,
                                      maxZoom = 18, 
                                      reuseTiles = T)) %>%
-      setView(lng = -1.5, lat = 53.4, zoom = 10) %>%
+      setView(lng = -1.5, lat = 53.4, zoom = 8) %>%
       mapOptions(zoomToLimits = "first") #%>%
       )
   
@@ -43,9 +43,16 @@ server <- function(input, output) {
     y0 <- input$map_bounds$south
     y1 <- input$map_bounds$north
     
-  
+    table_name <- "county"
+    
+    cat("Zoom is ", input$map_zoom, "\n")
+    if(input$map_zoom > 9 && input$map_zoom < 14)
+       table_name <- "msoa"
+    if(input$map_zoom >= 14)
+      table_name <- "lsoa"
+    
     qry <- paste0("SELECT `name`, `geometry`, AsText(`bbox`) as bbox
-                      FROM `county`
+                      FROM ", table_name , " 
                       WHERE MBRIntersects(`bbox`, ST_GeomFromText('Polygon((
                       ", x0, " ", y0, ", ",
                   x0, " ", y1, ", ",
@@ -53,7 +60,7 @@ server <- function(input, output) {
                   x1, " ", y0, ", ",
                   x0, " ", y0, " ))'));")
     
-    # cat(qry, "\n")
+    cat("Zoom is ", input$map_zoom, "\n")#, qry, "\n")
     
     conn <- dbConnect(
       drv = RMySQL::MySQL(),
@@ -74,6 +81,8 @@ server <- function(input, output) {
       clearGroup(leafletProxy("map"), c("poly"))
       
       local_dat <- get_geojson_data(dbdata)
+      
+      cat("adding polygons\n")
 
       leafletProxy("map")  %>% addPolygons(data = local_dat,
                                            popup = local_dat$name,
