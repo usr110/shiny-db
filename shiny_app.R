@@ -103,65 +103,7 @@ server <- function(input, output) {
     return(c(x0, x1, y0, y1))
   })
   
-  # observe({
-  #   
-  #   #input$map_zoom
-  #   
-  #   bbox <- map_bb()
-  # 
-  #   cat("length : ", length(bbox), "\n")
-  #   if (is.null(bbox) || length(bbox) != 4)
-  #     return()
-  # 
-  #   x0 <- bbox[1]
-  #   x1 <- bbox[2]
-  #   y0 <- bbox[3]
-  #   y1 <- bbox[4]
-  # 
-  #   conn <- dbConnect(
-  #     drv = RMySQL::MySQL(),
-  #     dbname = db_cred$schema,
-  #     host = db_cred$host,
-  #     username = db_cred$username,
-  #     password = db_cred$pwd
-  #   )
-  # 
-  #   qry <- paste0("SELECT `name`, `geometry`, AsText(`bbox`) as bbox
-  #                   FROM `county`
-  #                   WHERE MBRIntersects(`bbox`, ST_GeomFromText('Polygon((
-  #                   ", x0, " ", y0, ", ",
-  #                   x0, " ", y1, ", ",
-  #                   x1, " ", y1, ", ",
-  #                   x1, " ", y0, ", ",
-  #                   x0, " ", y0, " ))'));")
-  # 
-  # 
-  #   #cat(qry, "\n")
-  # 
-  #   rs <- dbSendQuery(conn, qry)
-  # 
-  #   dbdata <- dbFetch(rs)
-  # 
-  #   #cat("Nrows: ", nrow(dbdata), "\n")
-  # 
-  #   dbDisconnect(conn)
-  # 
-  #   if (!is.null(dbdata) && nrow(dbdata) > 0){
-  #     get_geojson_data(dbdata)
-  #     
-  #     #geojson_write(dat)
-  #     dat <- geojson_read("test.geojson", what = "sp")
-  #     cat("Nrows: ", nrow(dat@data), "\n")
-  #     # %>% removeShape("polygons")
-  #     leafletProxy("map")  %>% addPolygons(data = dat, # geojson_read("myfile.geojson", what = "sp"),
-  #                                          popup = dat$name,
-  #                                          color = "black",
-  #                                          opacity = 0.7 ,
-  #                                          layerId = "polygons")
-  #   }
-  #   
-  # })
-      
+
   get_geojson_data <- function(raw_data){
     
     test = ""
