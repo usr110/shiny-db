@@ -43,11 +43,13 @@ server <- function(input, output) {
     y0 <- input$map_bounds$south
     y1 <- input$map_bounds$north
     
+    # Set default polygons at level 7 and 8 to county
     table_name <- "county"
     
-    cat("Zoom is ", input$map_zoom, "\n")
+    # Set msoa for zoom 10 to 13
     if(input$map_zoom > 9 && input$map_zoom < 14)
        table_name <- "msoa"
+    # Set lsoa for zoom 14 and above
     if(input$map_zoom >= 14)
       table_name <- "lsoa"
     
@@ -85,7 +87,7 @@ server <- function(input, output) {
       cat("adding polygons\n")
 
       leafletProxy("map")  %>% addPolygons(data = local_dat,
-                                           popup = local_dat$name,
+                                           label = paste(table_name, local_dat$name),
                                            group = "poly",
                                            color = "black",
                                            opacity = 0.7,
