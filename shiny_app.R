@@ -20,7 +20,8 @@ server <- function(input, output) {
                options = tileOptions(minZoom = 6,
                                      maxZoom = 20, 
                                      reuseTiles = T)) %>%
-      setView(lng =  -0.118092, lat = 51.509865, zoom = 6) %>%
+      
+      setView(lng =  -1.0, lat = 52.8, zoom = 6) %>%
       mapOptions(zoomToLimits = "first") #%>%
       )
   
@@ -154,6 +155,7 @@ server <- function(input, output) {
 ui <- fluidPage(
   
   leafletOutput("map", width="100%", height= 800)
+
 )
 
 shinyApp(ui = ui, server = server)
