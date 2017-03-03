@@ -8,8 +8,10 @@ conn <- NULL
 dbdata <- NULL
 
 db_cred <- read.csv("db-info.csv", header = T, stringsAsFactors = F)
+params <- NULL
 
 server <- function(input, output) {
+  params <- reactiveValues(geo_level = NULL)
   
   # Initialize the leaflet map
   output$map <- renderLeaflet(
@@ -54,7 +56,14 @@ server <- function(input, output) {
     if(input$map_zoom >= 13)
       table_name <- "lsoa"
     
-    qry <- paste0("SELECT `name`, `geometry`, AsText(`bbox`) as bbox
+    qry = ""
+    # For county bring all data
+    if(input$map_zoom < 11){
+      qry <- paste0("SELECT `name`, `geometry`, AsText(`bbox`) as bbox
+                      FROM ", table_name)
+      
+    }else{
+      qry <- paste0("SELECT `name`, `geometry`, AsText(`bbox`) as bbox
                       FROM ", table_name , " 
                       WHERE MBRIntersects(`bbox`, ST_GeomFromText('Polygon((
                       ", x0, " ", y0, ", ",
@@ -62,6 +71,13 @@ server <- function(input, output) {
                   x1, " ", y1, ", ",
                   x1, " ", y0, ", ",
                   x0, " ", y0, " ))'));")
+    }
+    
+    if (!is.null(params$geo_level) && table_name == "county"){
+      
+      cat("Returning...\n")
+      return(NULL)
+    }
     
     cat("Zoom is ", input$map_zoom, "\n")#, qry, "\n")
     
@@ -81,7 +97,7 @@ server <- function(input, output) {
 
     if (!is.null(dbdata) && nrow(dbdata) > 0){
       
-      clearGroup(leafletProxy("map"), c("poly"))
+      clearGroup(leafletProxy("map"), c("county", "msoa", "lsoa"))
       
       local_dat <- get_geojson_data(dbdata)
       
@@ -89,10 +105,12 @@ server <- function(input, output) {
 
       leafletProxy("map")  %>% addPolygons(data = local_dat,
                                            label = paste(table_name, local_dat$name),
-                                           group = "poly",
+                                           group = table_name,
                                            color = "black",
                                            opacity = 0.7,
                                            layerId = paste0(local_dat$name, '-', "zones"))
+      
+      params$geo_level <<- table_name
       
     }
   })
